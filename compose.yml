@@ -12,7 +12,7 @@ services:
     # options: >-
     #   --health-cmd healthcheck.sh --health-interval 10s --health-timeout 5s --health-retries 10
 
-  postgres:
+  keycloakdb:
     image: postgres:16.3
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -20,8 +20,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    networks:
-      - keycloak_network
+    # networks:
+    #   - keycloak_network
 
   keycloak:
     image: quay.io/keycloak/keycloak:25.0.2
@@ -30,27 +30,28 @@ services:
       KC_HOSTNAME: localhost
       KC_HOSTNAME_PORT: 8081
       KC_HOSTNAME_STRICT_BACKCHANNEL: false
-      KC_HTTP_ENABLED: true
       KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HTTP_ENABLED: true
+      KC_METRICS_ENABLED: true
       KC_HEALTH_ENABLED: true
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres/${POSTGRES_DB}
+      KC_DB_URL: jdbc:postgresql://keycloakdb:5432/${POSTGRES_DB}
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_LOG_LEVEL: info
     ports:
-      - 8081:8081
+      - 8081:8080
     depends_on:
-      - postgres
-    networks:
-      - keycloak_network
+      - keycloakdb
+    # networks:
+    #   - keycloak_network
 
 volumes:
   oracle-data:
   postgres_data:
 
-
-networks:
-  keycloak_network:
-    driver: bridge
+    # networks:
+    #   keycloak_network:
+    #     driver: bridge
