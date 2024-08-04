@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <springProfile name="test">
+    <logger name="com.ramramv" level="DEBUG" />
+    <logger name="org.hibernate.SQL" level="DEBUG" />
+    <logger name="org.hibernate.orm.jdbc.bind" level="TRACE" />
+  </springProfile>
+
+  <springProfile name="dev">
+    <logger name="com.ramramv" level="DEBUG" />
+    <logger name="org.hibernate.SQL" level="DEBUG" />
+    <logger name="org.hibernate.orm.jdbc.bind" level="TRACE" />
+  </springProfile>
+
+  <springProfile name="prod">
+    <logger name="com.ramramv" level="INFO" />
+  </springProfile>
+
+  <!-- 콘솔 출력 설정 -->
+  <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- 파일 출력 설정 -->
+  <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/spring-boot-app.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- 파일 이름에 날짜를 추가하여 로그를 분리 -->
+      <fileNamePattern>logs/spring-boot-app.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <!-- 최대 30일간의 로그 파일을 유지 -->
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- 전체 로깅 설정 -->
+  <root level="INFO">
+    <appender-ref ref="Console" />
+    <appender-ref ref="File" />
+  </root>
+
+</configuration>
